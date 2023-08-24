@@ -5,7 +5,7 @@ document.getElementById('commentForm').addEventListener('submit', function(e) {
     fetch('https://api.github.com/repos/llldayanlll/ok/issues', {
         method: 'POST',
         headers: {
-            'Authorization': 'Bearer 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',
+            'Authorization': 'Bearer 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',
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({

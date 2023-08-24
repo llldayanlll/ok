@@ -1,36 +1,46 @@
+// Function to load and display comments
 function loadComments() {
     fetch('https://raw.githubusercontent.com/llldayanlll/ok/main/comments.md?' + Date.now())
-
     .then(response => response.text())
     .then(data => {
         const commentsDiv = document.getElementById('comments');
-        commentsDiv.innerHTML = data; // Render raw markdown content
+        commentsDiv.innerHTML = data;
     })
-    .catch(error => console.error('Error:', error));
+    .catch(error => console.error('Error fetching comments:', error));
 }
 
+// Load comments when the page is loaded
 document.addEventListener('DOMContentLoaded', loadComments);
 
+// Form submission event listener
 document.getElementById('commentForm').addEventListener('submit', function(e) {
     e.preventDefault();
+
+    // Get the comment text from the form
     const commentText = document.getElementById('commentText').value;
 
     // Create the new comment in Markdown format
     const newComment = `\n\n### Comment:\n${commentText}\n`;
 
-    // Append the new comment to the comments.md file
+    // Fetch current content of the comments.md file
     fetch('https://api.github.com/repos/llldayanlll/ok/contents/comments.md', {
-        method: 'GET',
         headers: {
             'Authorization': 'Bearer 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'
         }
     })
     .then(response => response.json())
     .then(data => {
-        const currentContent = atob(data.content); // Decode base64 content
+        // Decode base64 content
+        const currentContent = atob(data.content);
+
+        // Append the new comment
         const newContent = currentContent + newComment;
 
-        return fetch('https://api.github.com/repos/llldayanlll/ok/contents/comments.md', {
+        // Encode new content to base64
+        const encodedContent = btoa(newContent);
+
+        // Update the comments.md file with the new content
+        return fetch('https://api.github.com/repos/llldayanlll/yourrepositoryname/contents/comments.md', {
             method: 'PUT',
             headers: {
                 'Authorization': 'Bearer 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',
@@ -38,17 +48,24 @@ document.getElementById('commentForm').addEventListener('submit', function(e) {
             },
             body: JSON.stringify({
                 message: 'Add new comment',
-                content: btoa(newContent), // Encode new content to base64
-                sha: data.sha // Commit SHA
+                content: encodedContent,
+                sha: data.sha
             })
         });
     })
     .then(response => {
         if (response.ok) {
-            // Reload comments after adding a new comment
-            loadComments();
             // Clear the comment input field
             document.getElementById('commentText').value = '';
+
+            // Reload comments after adding a new comment
+            loadComments();
+
+            // Log a success message
+            console.log('Comment submitted successfully.');
+        } else {
+            // Log an error message
+            console.error('Error submitting comment:', response.status, response.statusText);
         }
     })
     .catch(error => console.error('Error:', error));

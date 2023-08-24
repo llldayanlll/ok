@@ -1,6 +1,6 @@
 // Function to load and display comments
 function loadComments() {
-    fetch('https://raw.githubusercontent.com/llldayanlll/ok/main/comments.md?' + Date.now())
+    fetch('https://raw.githubusercontent.com/llldayanlll/yourrepositoryname/main/comments.md?' + Date.now())
     .then(response => response.text())
     .then(data => {
         const commentsDiv = document.getElementById('comments');
@@ -15,7 +15,8 @@ document.addEventListener('DOMContentLoaded', loadComments);
 // Form submission event listener
 document.getElementById('commentForm').addEventListener('submit', function(e) {
     e.preventDefault();
-
+    console.log('Form submitted'); // Debugging line to check if the form submission is triggered
+    
     // Get the comment text from the form
     const commentText = document.getElementById('commentText').value;
 
@@ -23,7 +24,7 @@ document.getElementById('commentForm').addEventListener('submit', function(e) {
     const newComment = `\n\n### Comment:\n${commentText}\n`;
 
     // Fetch current content of the comments.md file
-    fetch('https://api.github.com/repos/llldayanlll/ok/contents/comments.md', {
+    fetch('https://api.github.com/repos/llldayanlll/yourrepositoryname/contents/comments.md', {
         headers: {
             'Authorization': 'Bearer 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'
         }

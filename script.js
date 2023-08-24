@@ -26,7 +26,7 @@ document.getElementById('commentForm').addEventListener('submit', function(e) {
     // Fetch current content of the comments.md file
     fetch('https://api.github.com/repos/llldayanlll/ok/contents/comments.md', {
         headers: {
-            'Authorization': 'Bearer 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'
+            'Authorization': 'Bearer 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'
         }
     })
     .then(response => response.json())
@@ -44,7 +44,7 @@ document.getElementById('commentForm').addEventListener('submit', function(e) {
         return fetch('https://api.github.com/repos/llldayanlll/ok/contents/comments.md', {
             method: 'PUT',
             headers: {
-                'Authorization': 'Bearer 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',
+                'Authorization': 'Bearer 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',
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({

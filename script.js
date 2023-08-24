@@ -1,52 +1,54 @@
+function loadComments() {
+    fetch('https://raw.githubusercontent.com/llldayanlll/ok/main/comments.md')
+    .then(response => response.text())
+    .then(data => {
+        const commentsDiv = document.getElementById('comments');
+        commentsDiv.innerHTML = data; // Render raw markdown content
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+document.addEventListener('DOMContentLoaded', loadComments);
+
 document.getElementById('commentForm').addEventListener('submit', function(e) {
     e.preventDefault();
     const commentText = document.getElementById('commentText').value;
 
-    fetch('https://api.github.com/repos/llldayanlll/ok/issues', {
-        method: 'POST',
+    // Create the new comment in Markdown format
+    const newComment = `\n\n### Comment:\n${commentText}\n`;
+
+    // Append the new comment to the comments.md file
+    fetch('https://api.github.com/repos/llldayanlll/ok/contents/comments.md', {
+        method: 'GET',
         headers: {
-            'Authorization': 'Bearer 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',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            title: 'New Comment',
-            body: commentText
-        })
+            'Authorization': 'Bearer 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'
+        }
     })
     .then(response => response.json())
     .then(data => {
-        // Clear the comment input field
-        document.getElementById('commentText').value = '';
-        
-        // Display the new comment immediately
-        displayComment(commentText);
+        const currentContent = atob(data.content); // Decode base64 content
+        const newContent = currentContent + newComment;
+
+        return fetch('https://api.github.com/repos/llldayanlll/ok/contents/comments.md', {
+            method: 'PUT',
+            headers: {
+                'Authorization': 'Bearer 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',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                message: 'Add new comment',
+                content: btoa(newContent), // Encode new content to base64
+                sha: data.sha // Commit SHA
+            })
+        });
+    })
+    .then(response => {
+        if (response.ok) {
+            // Reload comments after adding a new comment
+            loadComments();
+            // Clear the comment input field
+            document.getElementById('commentText').value = '';
+        }
     })
     .catch(error => console.error('Error:', error));
 });
-
-function loadComments() {
-    fetch('https://api.github.com/repos/llldayanlll/ok/issues')
-    .then(response => response.json())
-    .then(data => {
-        const commentsDiv = document.getElementById('comments');
-        commentsDiv.innerHTML = '';
-
-        data.forEach(issue => {
-            displayComment(issue.body);
-        });
-    })
-    .catch(error => console.error('Error:', error));
-}
-
-function displayComment(commentText) {
-    const commentsDiv = document.getElementById('comments');
-    const commentDiv = document.createElement('div');
-    commentDiv.classList.add('comment');
-    commentDiv.innerHTML = `
-        <h3>Comment:</h3>
-        <p>${commentText}</p>
-    `;
-    commentsDiv.appendChild(commentDiv);
-}
-
-window.addEventListener('load', loadComments);

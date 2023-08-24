@@ -1,5 +1,6 @@
 function loadComments() {
-    fetch('https://raw.githubusercontent.com/llldayanlll/ok/main/comments.md')
+    fetch('https://raw.githubusercontent.com/llldayanlll/yourrepositoryname/main/comments.md?' + Date.now())
+
     .then(response => response.text())
     .then(data => {
         const commentsDiv = document.getElementById('comments');

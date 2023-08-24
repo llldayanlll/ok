@@ -41,7 +41,7 @@ document.getElementById('commentForm').addEventListener('submit', function(e) {
         const encodedContent = btoa(newContent);
 
         // Update the comments.md file with the new content
-        return fetch('https://api.github.com/repos/llldayanlll/yourrepositoryname/contents/comments.md', {
+        return fetch('https://api.github.com/repos/llldayanlll/ok/contents/comments.md', {
             method: 'PUT',
             headers: {
                 'Authorization': 'Bearer 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',
